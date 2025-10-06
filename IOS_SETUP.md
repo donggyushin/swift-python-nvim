@@ -10,16 +10,24 @@
 
 ## iOS 프로젝트에서 사용하기
 
-### 1. Xcode 프로젝트 열기 전 준비
+### 방법 1: xcode-build-server CLI 사용
 ```bash
 cd /path/to/your/ios-project
 xcode-build-server config -workspace MyApp.xcworkspace -scheme MyApp
-```
-
-### 2. nvim에서 Swift 파일 열기
-```bash
 nvim MyApp/ContentView.swift
 ```
+
+### 방법 2: XcodebuildPicker 사용 (권장)
+```bash
+cd /path/to/your/ios-project
+nvim MyApp/ContentView.swift
+```
+
+nvim에서:
+1. `:XcodebuildPicker` 실행
+2. 프로젝트/워크스페이스 선택
+3. 스킴 선택
+4. LSP가 자동으로 구성됨
 
 ### 3. LSP가 자동으로 시작되며 다음 기능 사용 가능:
 - **자동완성**: 사용자 정의 클래스, 구조체, 열거형 모두 지원
