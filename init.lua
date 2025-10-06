@@ -56,7 +56,7 @@ require("lazy").setup({
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "python", "lua", "vim", "vimdoc" },
+        ensure_installed = { "python", "lua", "vim", "vimdoc", "swift" },
         auto_install = true,
         highlight = { enable = true },
         indent = { enable = true },
@@ -126,6 +126,23 @@ require("lazy").setup({
 
   -- 인덴트 가이드
   { "lukas-reineke/indent-blankline.nvim", main = "ibl" },
+
+  -- xcode-build-server (iOS/Xcode 프로젝트 지원)
+  {
+    "wojciech-kulik/xcodebuild.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("xcodebuild").setup({
+        -- xcode-build-server 자동 실행
+        code_coverage = {
+          enabled = true,
+        },
+      })
+    end,
+  },
 })
 
 -- Mason 설정 (LSP 서버 관리)
@@ -163,11 +180,40 @@ vim.lsp.config.ruff = {
   capabilities = capabilities,
 }
 
+-- SourceKit (Swift LSP)
+vim.lsp.config.sourcekit = {
+  cmd = { "sourcekit-lsp" },
+  filetypes = { "swift", "objc", "objcpp" },
+  root_markers = { "Package.swift", ".git", "*.xcodeproj", "*.xcworkspace" },
+  capabilities = capabilities,
+  settings = {
+    sourcekit = {
+      -- Xcode 프로젝트 지원 강화
+      indexing = {
+        enabled = true,
+      },
+    },
+  },
+  on_attach = function(client, bufnr)
+    -- iOS 프로젝트의 경우 인덱싱이 완료될 때까지 대기
+    vim.defer_fn(function()
+      vim.notify("SourceKit LSP ready for " .. vim.fn.expand("%:t"), vim.log.levels.INFO)
+    end, 2000)
+  end,
+}
+
 -- LSP 자동 시작
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "python",
   callback = function()
     vim.lsp.enable({ "pyright", "ruff" })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "swift", "objc", "objcpp" },
+  callback = function()
+    vim.lsp.enable("sourcekit")
   end,
 })
 
@@ -234,6 +280,7 @@ cmp.setup({
 require("conform").setup({
   formatters_by_ft = {
     python = { "black", "isort" },
+    swift = { "swiftformat" },
   },
   format_on_save = {
     timeout_ms = 500,
@@ -320,3 +367,10 @@ keymap("v", ">", ">gv", { desc = "Indent right" })
 -- 터미널
 keymap("n", "<leader>t", ":split | terminal<CR>", { desc = "Open terminal" })
 keymap("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- Xcode 프로젝트 명령어
+keymap("n", "<leader>xb", ":XcodebuildBuild<CR>", { desc = "Xcode Build" })
+keymap("n", "<leader>xr", ":XcodebuildRun<CR>", { desc = "Xcode Run" })
+keymap("n", "<leader>xs", ":XcodebuildPicker<CR>", { desc = "Xcode Picker" })
+keymap("n", "<leader>xd", ":XcodebuildSelectDevice<CR>", { desc = "Xcode Select Device" })
+keymap("n", "<leader>xc", ":XcodebuildToggleCodeCoverage<CR>", { desc = "Xcode Toggle Coverage" })
