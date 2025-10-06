@@ -148,7 +148,7 @@ require("lazy").setup({
 -- Mason 설정 (LSP 서버 관리)
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "pyright", "ruff", "sourcekit" },
+  ensure_installed = { "pyright", "ruff" },
   automatic_installation = true,
 })
 
