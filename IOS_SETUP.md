@@ -8,6 +8,16 @@
    brew install xcode-build-server
    ```
 
+## Development Tools (Optional)
+nvim 사용 시 필요한 도구들:
+```bash
+# ripgrep - Live grep 검색 기능 (Telescope)
+brew install ripgrep
+
+# fd - 향상된 파일 검색 기능 (Telescope)
+brew install fd
+```
+
 ## iOS 프로젝트에서 사용하기
 
 ### 방법 1: xcode-build-server CLI 사용
