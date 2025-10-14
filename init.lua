@@ -364,10 +364,10 @@ keymap("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 keymap("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 -- 윈도우 크기 조절
-keymap("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
-keymap("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease window height" })
-keymap("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
-keymap("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+keymap("n", "<A-Up>", ":resize +2<CR>", { desc = "Increase window height" })
+keymap("n", "<A-Down>", ":resize -2<CR>", { desc = "Decrease window height" })
+keymap("n", "<A-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
+keymap("n", "<A-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
 
 -- 비주얼 모드에서 인덴트 유지
 keymap("v", "<", "<gv", { desc = "Indent left" })
