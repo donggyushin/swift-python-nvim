@@ -299,6 +299,10 @@ require("nvim-tree").setup({
   view = {
     width = 30,
   },
+  update_focused_file = {
+    enable = true,      -- 파일 변경 시 자동으로 트리에서 해당 파일 위치로 이동
+    update_cwd = false, -- 작업 디렉토리는 변경하지 않음
+  },
 })
 
 -- Telescope 설정
@@ -346,6 +350,7 @@ local keymap = vim.keymap.set
 
 -- 파일 탐색기
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
+keymap("n", "<leader>ef", ":NvimTreeFindFile<CR>", { desc = "Find current file in explorer" })
 
 -- Telescope
 keymap("n", "<leader>ff", require("telescope.builtin").find_files, { desc = "Find files" })
