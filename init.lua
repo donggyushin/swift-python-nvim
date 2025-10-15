@@ -389,17 +389,17 @@ keymap("n", "<leader>xs", ":XcodebuildPicker<CR>", { desc = "Xcode Picker" })
 keymap("n", "<leader>xd", ":XcodebuildSelectDevice<CR>", { desc = "Xcode Select Device" })
 keymap("n", "<leader>xc", ":XcodebuildToggleCodeCoverage<CR>", { desc = "Xcode Toggle Coverage" })
 
--- Swift 파일 저장 시 자동 인덱스 업데이트
-vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = "*.swift",
-  callback = function()
-    -- buildServer.json이 있는 경우에만 실행 (Xcode 프로젝트)
-    if vim.fn.filereadable("buildServer.json") == 1 then
-      -- 비동기로 빌드 실행 (UI 블로킹 방지)
-      vim.defer_fn(function()
-        vim.cmd("silent! XcodebuildBuild")
-      end, 100)
-    end
-  end,
-  desc = "Auto-update Xcode index on Swift file save"
-})
+-- Swift 파일 저장 시 자동 인덱스 업데이트 (비활성화)
+-- vim.api.nvim_create_autocmd("BufWritePost", {
+--   pattern = "*.swift",
+--   callback = function()
+--     -- buildServer.json이 있는 경우에만 실행 (Xcode 프로젝트)
+--     if vim.fn.filereadable("buildServer.json") == 1 then
+--       -- 비동기로 빌드 실행 (UI 블로킹 방지)
+--       vim.defer_fn(function()
+--         vim.cmd("silent! XcodebuildBuild")
+--       end, 100)
+--     end
+--   end,
+--   desc = "Auto-update Xcode index on Swift file save"
+-- })
