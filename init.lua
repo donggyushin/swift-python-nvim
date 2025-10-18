@@ -300,7 +300,7 @@ require("conform").setup({
     formatters = {
         swiftlint = {
             command = "swiftlint",
-            args = { "lint", "--fix", "--path", "$FILENAME", "--quiet" },
+            args = { "lint", "--fix", "--quiet", "$FILENAME" },
             stdin = false,
         },
     },
@@ -363,6 +363,7 @@ local keymap = vim.keymap.set
 -- 파일 탐색기
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
 keymap("n", "<leader>ef", ":NvimTreeFindFile<CR>", { desc = "Find current file in explorer" })
+keymap("n", "<leader>ec", ":NvimTreeCollapse<CR>", { desc = "Collapse all folders in explorer" })
 
 -- Telescope
 keymap("n", "<leader>ff", require("telescope.builtin").find_files, { desc = "Find files" })
