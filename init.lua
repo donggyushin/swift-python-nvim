@@ -375,6 +375,12 @@ keymap("n", "<leader>fh", require("telescope.builtin").help_tags, { desc = "Help
 keymap("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-h>", ":bprevious<CR>", { desc = "Previous buffer" })
 
+-- Diagnostics
+pcall(vim.keymap.del, "n", "<leader>d")
+keymap("n", "<leader>d", function()
+    vim.diagnostic.open_float(nil, { focus = false, border = "rounded", scope = "line" })
+end, { desc = "Show diagnostic message" })
+
 -- 윈도우 네비게이션
 keymap("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 keymap("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
