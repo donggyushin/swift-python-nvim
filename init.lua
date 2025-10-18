@@ -291,11 +291,18 @@ cmp.setup({
 require("conform").setup({
     formatters_by_ft = {
         python = { "black", "isort" },
-        swift = { "swiftformat" },
+        swift = { "swiftformat", "swiftlint" },
     },
     format_on_save = {
         timeout_ms = 500,
         lsp_fallback = true,
+    },
+    formatters = {
+        swiftlint = {
+            command = "swiftlint",
+            args = { "lint", "--fix", "--path", "$FILENAME", "--quiet" },
+            stdin = false,
+        },
     },
 })
 
