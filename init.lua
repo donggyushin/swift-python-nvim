@@ -298,10 +298,6 @@ require("conform").setup({
         lsp_fallback = true,
     },
     formatters = {
-        swiftformat = {
-            -- redundantPublicACL 규칙 비활성화 (extension의 public 멤버가 제거되는 문제 방지)
-            prepend_args = { "--disable", "redundantPublicACL" },
-        },
         swiftlint = {
             command = "swiftlint",
             args = { "lint", "--fix", "--quiet", "$FILENAME" },
