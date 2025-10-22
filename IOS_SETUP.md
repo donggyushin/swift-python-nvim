@@ -17,7 +17,7 @@ brew install ripgrep
 # fd - 향상된 파일 검색 기능 (Telescope)
 brew install fd
 
-brew install swiftformatter
+brew install swiftformat
 brew install swiftlint
 ```
 
