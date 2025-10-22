@@ -16,6 +16,9 @@ brew install ripgrep
 
 # fd - 향상된 파일 검색 기능 (Telescope)
 brew install fd
+
+brew install swiftformatter
+brew install swiftlint
 ```
 
 ## iOS 프로젝트에서 사용하기
