@@ -19,6 +19,7 @@ brew install fd
 
 brew install swiftformat
 brew install swiftlint
+brew install tree-sitter-cli
 ```
 
 ## iOS 프로젝트에서 사용하기
