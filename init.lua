@@ -58,7 +58,7 @@ require("lazy").setup({
                 transparent = true,
                 dimInactive = true,
                 terminalColors = true,
-                theme = "wave", -- "wave", "dragon", "lotus"
+                theme = "dragon", -- "wave", "dragon", "lotus"
             })
             vim.cmd.colorscheme("kanagawa")
         end,
