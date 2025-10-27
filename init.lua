@@ -60,7 +60,8 @@ require("lazy").setup({
                 terminalColors = true,
                 theme = "dragon", -- "wave", "dragon", "lotus"
             })
-            vim.cmd.colorscheme("kanagawa")
+            -- 명시적으로 dragon 테마 로드
+            vim.cmd.colorscheme("kanagawa-dragon")
         end,
     },
 
