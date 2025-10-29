@@ -42,16 +42,26 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- 컬러 스킴
     {
-        "sainnhe/everforest",
-        name = "everforest",
+        "rebelot/kanagawa.nvim",
+        name = "kanagawa",
         priority = 1000,
         config = function()
-            -- Everforest 설정
-            vim.g.everforest_background = 'hard' -- 'hard', 'medium', 'soft'
-            vim.g.everforest_better_performance = 1
-            vim.g.everforest_enable_italic = 1
-            vim.g.everforest_dim_inactive_windows = 1
-            vim.cmd.colorscheme("everforest")
+            -- Kanagawa 설정
+            require('kanagawa').setup({
+                compile = false,
+                undercurl = true,
+                commentStyle = { italic = true },
+                functionStyle = {},
+                keywordStyle = { italic = true},
+                statementStyle = { bold = true },
+                typeStyle = {},
+                transparent = true,
+                dimInactive = true,
+                terminalColors = true,
+                theme = "dragon", -- "wave", "dragon", "lotus"
+            })
+            -- 명시적으로 dragon 테마 로드
+            vim.cmd.colorscheme("kanagawa-dragon")
         end,
     },
 
@@ -336,7 +346,7 @@ pcall(require("telescope").load_extension, "fzf")
 -- Lualine 설정
 require("lualine").setup({
     options = {
-        theme = "everforest",
+        theme = "kanagawa",
         component_separators = "|",
         section_separators = "",
     },
