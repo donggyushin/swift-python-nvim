@@ -48,11 +48,21 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- 컬러 스킴
     {
-        "rebelot/kanagawa.nvim",
-        name = "kanagawa",
+        "nyoom-engineering/oxocarbon.nvim",
+        name = "oxocarbon",
         priority = 1000,
         config = function()
-            -- Kanagawa 설정
+            vim.opt.background = "dark" -- or "light"
+            vim.cmd.colorscheme("oxocarbon")
+        end,
+    },
+
+    -- Kanagawa (대체 컬러 스킴)
+    {
+        "rebelot/kanagawa.nvim",
+        name = "kanagawa",
+        lazy = true, -- 기본으로 로드하지 않음
+        config = function()
             require('kanagawa').setup({
                 compile = false,
                 undercurl = true,
@@ -64,10 +74,8 @@ require("lazy").setup({
                 transparent = true,
                 dimInactive = true,
                 terminalColors = true,
-                theme = "dragon", -- "wave", "dragon", "lotus"
+                theme = "dragon",
             })
-            -- 명시적으로 dragon 테마 로드
-            vim.cmd.colorscheme("kanagawa-dragon")
         end,
     },
 
@@ -378,7 +386,7 @@ pcall(require("telescope").load_extension, "fzf")
 -- Lualine 설정
 require("lualine").setup({
     options = {
-        theme = "kanagawa",
+        theme = "auto", -- oxocarbon 테마를 자동으로 감지
         component_separators = "|",
         section_separators = "",
     },
