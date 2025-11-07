@@ -305,6 +305,28 @@ cmp.setup({
 })
 
 -- Conform (Formatter) 설정
+-- .swiftformat 파일이 없을 때 사용할 기본 설정
+local function get_swiftformat_args()
+    local root = vim.fn.getcwd()
+    local swiftformat_path = root .. "/.swiftformat"
+
+    -- .swiftformat 파일이 있으면 기본 인자 없이 실행 (파일 설정 사용)
+    if vim.fn.filereadable(swiftformat_path) == 1 then
+        return {}
+    end
+
+    -- .swiftformat 파일이 없으면 기본 설정 사용
+    return {
+        "--self", "init-only",
+        "--indent", "4",
+        "--ifdef", "no-indent",
+        "--importgrouping", "testable-bottom",
+        "--maxwidth", "120",
+        "--wraparguments", "before-first",
+        "--wrapcollections", "before-first",
+    }
+end
+
 require("conform").setup({
     formatters_by_ft = {
         python = { "black", "isort" },
@@ -315,6 +337,9 @@ require("conform").setup({
         lsp_fallback = true,
     },
     formatters = {
+        swiftformat = {
+            prepend_args = get_swiftformat_args(),
+        },
         swiftlint = {
             command = "swiftlint",
             args = { "lint", "--fix", "--quiet", "$FILENAME" },
