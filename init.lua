@@ -54,8 +54,8 @@ require("lazy").setup({
         priority = 1000,
         config = function()
             require("tokyonight").setup({
-                style = "night",  -- "storm", "moon", "night", "day"
-                transparent = false,
+                style = "night", -- "storm", "moon", "night", "day"
+                transparent = true,
                 terminal_colors = true,
                 styles = {
                     comments = { italic = true },
