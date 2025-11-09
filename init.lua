@@ -27,8 +27,8 @@ vim.opt.cursorline = true
 -- 폴딩 설정
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.foldenable = false  -- 파일 열 때 자동으로 접히지 않게
-vim.opt.foldlevel = 99      -- 기본적으로 모두 펼쳐진 상태
+vim.opt.foldenable = false -- 파일 열 때 자동으로 접히지 않게
+vim.opt.foldlevel = 99     -- 기본적으로 모두 펼쳐진 상태
 
 -- lazy.nvim 부트스트랩
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -48,11 +48,47 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- 컬러 스킴
     {
-        "nyoom-engineering/oxocarbon.nvim",
-        name = "oxocarbon",
+        "folke/tokyonight.nvim",
+        name = "tokyonight",
+        lazy = false,
         priority = 1000,
         config = function()
-            vim.opt.background = "dark" -- or "light"
+            require("tokyonight").setup({
+                style = "night",  -- "storm", "moon", "night", "day"
+                transparent = false,
+                terminal_colors = true,
+                styles = {
+                    comments = { italic = true },
+                    keywords = { italic = true },
+                },
+            })
+            vim.cmd.colorscheme("tokyonight")
+        end,
+    },
+
+    -- Cyberdream (대체 컬러 스킴)
+    {
+        "scottmckendry/cyberdream.nvim",
+        name = "cyberdream",
+        lazy = true,
+        config = function()
+            require("cyberdream").setup({
+                transparent = false,
+                italic_comments = true,
+                hide_fillchars = true,
+                borderless_telescope = true,
+                terminal_colors = true,
+            })
+        end,
+    },
+
+    -- Oxocarbon (대체 컬러 스킴)
+    {
+        "nyoom-engineering/oxocarbon.nvim",
+        name = "oxocarbon",
+        lazy = true,
+        config = function()
+            vim.opt.background = "dark"
             vim.cmd.colorscheme("oxocarbon")
         end,
     },
@@ -61,14 +97,14 @@ require("lazy").setup({
     {
         "rebelot/kanagawa.nvim",
         name = "kanagawa",
-        lazy = true, -- 기본으로 로드하지 않음
+        lazy = true,
         config = function()
             require('kanagawa').setup({
                 compile = false,
                 undercurl = true,
                 commentStyle = { italic = true },
                 functionStyle = {},
-                keywordStyle = { italic = true},
+                keywordStyle = { italic = true },
                 statementStyle = { bold = true },
                 typeStyle = {},
                 transparent = true,
