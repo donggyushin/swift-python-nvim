@@ -24,6 +24,19 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.scrolloff = 8
 vim.opt.cursorline = true
 
+-- 활성 윈도우에만 cursorline 표시
+vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
+    callback = function()
+        vim.wo.cursorline = true
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
+    callback = function()
+        vim.wo.cursorline = false
+    end,
+})
+
 -- 폴딩 설정
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -198,6 +211,30 @@ require("lazy").setup({
 
     -- 인덴트 가이드
     { "lukas-reineke/indent-blankline.nvim", main = "ibl" },
+
+    -- 비활성 윈도우 어둡게 (tint)
+    {
+        "levouh/tint.nvim",
+        config = function()
+            require("tint").setup({
+                tint = -45, -- 어둡게 만들 정도 (-100 ~ 100, 음수는 어둡게)
+                saturation = 0.6, -- 채도 (0.0 ~ 1.0)
+                transforms = require("tint").transforms.SATURATE_TINT, -- 색조 변환 방법
+                tint_background_colors = true, -- 배경색도 어둡게
+                highlight_ignore_patterns = { "WinSeparator", "Status.*" }, -- 어둡게 하지 않을 하이라이트
+                window_ignore_function = function(winid)
+                    local bufid = vim.api.nvim_win_get_buf(winid)
+                    local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufid })
+                    local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufid })
+
+                    -- 특정 버퍼 타입이나 파일 타입은 어둡게 하지 않음
+                    return buftype == "terminal"
+                        or filetype == "NvimTree"
+                        or filetype == "TelescopePrompt"
+                end,
+            })
+        end,
+    },
 
     -- xcode-build-server (iOS/Xcode 프로젝트 지원)
     {
