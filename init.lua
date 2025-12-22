@@ -172,6 +172,23 @@ require("lazy").setup({
         cmd = { "ConformInfo" },
     },
 
+    -- 파일 아이콘
+    {
+        "nvim-tree/nvim-web-devicons",
+        config = function()
+            require("nvim-web-devicons").setup({
+                override_by_filename = {
+                    ["README.md"] = {
+                        icon = "",
+                        color = "#519aba",
+                        cterm_color = "74",
+                        name = "Readme",
+                    },
+                },
+            })
+        end,
+    },
+
     -- 파일 탐색기
     {
         "nvim-tree/nvim-tree.lua",
