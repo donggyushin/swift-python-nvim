@@ -134,7 +134,7 @@ require("lazy").setup({
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.configs").setup({
-                ensure_installed = { "python", "lua", "vim", "vimdoc", "swift" },
+                ensure_installed = { "python", "lua", "vim", "vimdoc", "swift", "html", "css", "javascript" },
                 auto_install = true,
                 highlight = { enable = true },
                 indent = { enable = true },
@@ -274,7 +274,7 @@ require("lazy").setup({
 -- Mason 설정 (LSP 서버 관리)
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "pyright", "ruff" },
+    ensure_installed = { "pyright", "ruff", "html", "cssls" },
     automatic_installation = true,
 })
 
@@ -303,6 +303,27 @@ vim.lsp.config.ruff = {
     cmd = { "ruff", "server" },
     filetypes = { "python" },
     root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", "ruff.toml" },
+    capabilities = capabilities,
+}
+
+-- HTML LSP
+vim.lsp.config.html = {
+    cmd = { "vscode-html-language-server", "--stdio" },
+    filetypes = { "html", "templ" },
+    root_markers = { "package.json", ".git" },
+    capabilities = capabilities,
+    init_options = {
+        provideFormatter = true,
+        embeddedLanguages = { css = true, javascript = true },
+        configurationSection = { "html", "css", "javascript" },
+    },
+}
+
+-- CSS LSP
+vim.lsp.config.cssls = {
+    cmd = { "vscode-css-language-server", "--stdio" },
+    filetypes = { "css", "scss", "less" },
+    root_markers = { "package.json", ".git" },
     capabilities = capabilities,
 }
 
@@ -340,6 +361,20 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { "swift", "objc", "objcpp" },
     callback = function()
         vim.lsp.enable("sourcekit")
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "html", "templ" },
+    callback = function()
+        vim.lsp.enable("html")
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "css", "scss", "less" },
+    callback = function()
+        vim.lsp.enable("cssls")
     end,
 })
 
@@ -429,6 +464,9 @@ require("conform").setup({
     formatters_by_ft = {
         python = { "black", "isort" },
         swift = { "swiftformat", "swiftlint" },
+        html = { "prettier" },
+        css = { "prettier" },
+        javascript = { "prettier" },
     },
     format_on_save = {
         timeout_ms = 500,
