@@ -467,6 +467,7 @@ require("conform").setup({
         html = { "prettier" },
         css = { "prettier" },
         javascript = { "prettier" },
+        markdown = { "prettier" },
     },
     format_on_save = {
         timeout_ms = 500,
