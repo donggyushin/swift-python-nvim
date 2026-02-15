@@ -269,6 +269,7 @@ require("lazy").setup({
             })
         end,
     },
+
 })
 
 -- Mason 설정 (LSP 서버 관리)
