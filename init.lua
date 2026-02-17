@@ -290,6 +290,7 @@ vim.lsp.config.pyright = {
     capabilities = capabilities,
     settings = {
         python = {
+            pythonPath = vim.fn.getcwd() .. "/.venv/bin/python",  -- uv 가상환경 자동 인식
             analysis = {
                 autoSearchPaths = true,
                 diagnosticMode = "workspace",
