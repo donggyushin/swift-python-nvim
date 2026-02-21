@@ -134,7 +134,7 @@ require("lazy").setup({
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.configs").setup({
-                ensure_installed = { "python", "lua", "vim", "vimdoc", "swift", "html", "css", "javascript" },
+                ensure_installed = { "python", "lua", "vim", "vimdoc", "swift", "html", "css", "javascript", "typescript", "tsx", "json" },
                 auto_install = true,
                 highlight = { enable = true },
                 indent = { enable = true },
@@ -275,7 +275,7 @@ require("lazy").setup({
 -- Mason 설정 (LSP 서버 관리)
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = { "pyright", "ruff", "html", "cssls" },
+    ensure_installed = { "pyright", "ruff", "html", "cssls", "ts_ls", "eslint", "jsonls" },
     automatic_installation = true,
 })
 
@@ -329,6 +329,76 @@ vim.lsp.config.cssls = {
     capabilities = capabilities,
 }
 
+-- TypeScript/JavaScript LSP
+vim.lsp.config.ts_ls = {
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+    capabilities = capabilities,
+    settings = {
+        typescript = {
+            inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+        javascript = {
+            inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+    },
+}
+
+-- ESLint LSP
+vim.lsp.config.eslint = {
+    cmd = { "vscode-eslint-language-server", "--stdio" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    root_markers = { "eslint.config.js", ".eslintrc.js", ".eslintrc.json", "package.json", ".git" },
+    capabilities = capabilities,
+    settings = {
+        codeAction = {
+            disableRuleComment = {
+                enable = true,
+                location = "separateLine",
+            },
+            showDocumentation = {
+                enable = true,
+            },
+        },
+        codeActionOnSave = {
+            enable = false,  -- Conform에서 처리
+            mode = "all",
+        },
+        format = false,  -- Prettier를 사용할 것이므로 비활성화
+        run = "onType",
+    },
+}
+
+-- JSON LSP
+vim.lsp.config.jsonls = {
+    cmd = { "vscode-json-language-server", "--stdio" },
+    filetypes = { "json", "jsonc" },
+    root_markers = { "package.json", ".git" },
+    capabilities = capabilities,
+    settings = {
+        json = {
+            validate = { enable = true },
+        },
+    },
+}
+
 -- SourceKit (Swift LSP)
 vim.lsp.config.sourcekit = {
     cmd = { "sourcekit-lsp" },
@@ -377,6 +447,20 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { "css", "scss", "less" },
     callback = function()
         vim.lsp.enable("cssls")
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    callback = function()
+        vim.lsp.enable({ "ts_ls", "eslint" })
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "json", "jsonc" },
+    callback = function()
+        vim.lsp.enable("jsonls")
     end,
 })
 
@@ -469,6 +553,10 @@ require("conform").setup({
         html = { "prettier" },
         css = { "prettier" },
         javascript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        json = { "prettier" },
         markdown = { "prettier" },
     },
     format_on_save = {
