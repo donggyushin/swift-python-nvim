@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
 
 -- 폴딩 설정
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false -- 파일 열 때 자동으로 접히지 않게
 vim.opt.foldlevel = 99     -- 기본적으로 모두 펼쳐진 상태
 
@@ -131,14 +131,20 @@ require("lazy").setup({
     -- Treesitter (구문 강조)
     {
         "nvim-treesitter/nvim-treesitter",
+        branch = "main",
+        lazy = false,
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = { "python", "lua", "vim", "vimdoc", "swift", "html", "css", "javascript", "typescript", "tsx", "json" },
-                auto_install = true,
-                highlight = { enable = true },
-                indent = { enable = true },
-                fold = { enable = true },
+            local parsers = { "python", "lua", "vim", "vimdoc", "swift", "html", "css", "javascript", "typescript", "tsx", "json" }
+            require("nvim-treesitter").install(parsers)
+
+            vim.api.nvim_create_autocmd("FileType", {
+                callback = function(args)
+                    local ok = pcall(vim.treesitter.start, args.buf)
+                    if ok then
+                        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    end
+                end,
             })
         end,
     },
