@@ -131,7 +131,6 @@ require("lazy").setup({
     -- Treesitter (구문 강조)
     {
         "nvim-treesitter/nvim-treesitter",
-        branch = "master",
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.configs").setup({
@@ -235,10 +234,10 @@ require("lazy").setup({
         "levouh/tint.nvim",
         config = function()
             require("tint").setup({
-                tint = -45, -- 어둡게 만들 정도 (-100 ~ 100, 음수는 어둡게)
-                saturation = 0.6, -- 채도 (0.0 ~ 1.0)
-                transforms = require("tint").transforms.SATURATE_TINT, -- 색조 변환 방법
-                tint_background_colors = true, -- 배경색도 어둡게
+                tint = -45,                                                 -- 어둡게 만들 정도 (-100 ~ 100, 음수는 어둡게)
+                saturation = 0.6,                                           -- 채도 (0.0 ~ 1.0)
+                transforms = require("tint").transforms.SATURATE_TINT,      -- 색조 변환 방법
+                tint_background_colors = true,                              -- 배경색도 어둡게
                 highlight_ignore_patterns = { "WinSeparator", "Status.*" }, -- 어둡게 하지 않을 하이라이트
                 window_ignore_function = function(winid)
                     local bufid = vim.api.nvim_win_get_buf(winid)
@@ -291,7 +290,7 @@ vim.lsp.config.pyright = {
     capabilities = capabilities,
     settings = {
         python = {
-            pythonPath = vim.fn.getcwd() .. "/.venv/bin/python",  -- uv 가상환경 자동 인식
+            pythonPath = vim.fn.getcwd() .. "/.venv/bin/python", -- uv 가상환경 자동 인식
             analysis = {
                 autoSearchPaths = true,
                 diagnosticMode = "workspace",
@@ -379,10 +378,10 @@ vim.lsp.config.eslint = {
             },
         },
         codeActionOnSave = {
-            enable = false,  -- Conform에서 처리
+            enable = false, -- Conform에서 처리
             mode = "all",
         },
-        format = false,  -- Prettier를 사용할 것이므로 비활성화
+        format = false, -- Prettier를 사용할 것이므로 비활성화
         run = "onType",
     },
 }
