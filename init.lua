@@ -131,6 +131,7 @@ require("lazy").setup({
     -- Treesitter (구문 강조)
     {
         "nvim-treesitter/nvim-treesitter",
+        branch = "master",
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter.configs").setup({
