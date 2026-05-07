@@ -272,6 +272,10 @@ require("lazy").setup({
                 code_coverage = {
                     enabled = true,
                 },
+                -- pbxproj 자동 수정 비활성화 — 파일 추가는 Xcode 에서 직접 수행
+                project_manager = {
+                    enabled = false,
+                },
             })
         end,
     },
