@@ -530,26 +530,21 @@ cmp.setup({
 })
 
 -- Conform (Formatter) 설정
--- .swiftformat 파일이 없을 때 사용할 기본 설정
-local function get_swiftformat_args()
-    local root = vim.fn.getcwd()
-    local swiftformat_path = root .. "/.swiftformat"
+-- 현재 편집 중인 파일 기준으로 프로젝트 루트를 찾아 .swiftformat을 explicit하게 --config로 전달.
+-- Mintfile이 있으면 (예: remember-ios) `mint run swiftformat`으로 핀된 SwiftFormat 사용.
+local SWIFT_FALLBACK_ARGS = {
+    "--self", "init-only",
+    "--indent", "4",
+    "--ifdef", "no-indent",
+    "--importgrouping", "testable-bottom",
+    "--maxwidth", "120",
+    "--wraparguments", "before-first",
+    "--wrapcollections", "before-first",
+}
 
-    -- .swiftformat 파일이 있으면 기본 인자 없이 실행 (파일 설정 사용)
-    if vim.fn.filereadable(swiftformat_path) == 1 then
-        return {}
-    end
-
-    -- .swiftformat 파일이 없으면 기본 설정 사용
-    return {
-        "--self", "init-only",
-        "--indent", "4",
-        "--ifdef", "no-indent",
-        "--importgrouping", "testable-bottom",
-        "--maxwidth", "120",
-        "--wraparguments", "before-first",
-        "--wrapcollections", "before-first",
-    }
+local function swift_root(ctx)
+    return vim.fs.root(ctx.dirname, { "Mintfile", ".swiftformat", ".git" })
+        or ctx.dirname
 end
 
 require("conform").setup({
@@ -571,7 +566,35 @@ require("conform").setup({
     },
     formatters = {
         swiftformat = {
-            prepend_args = get_swiftformat_args(),
+            command = function(_, ctx)
+                local root = swift_root(ctx)
+                if vim.fn.filereadable(root .. "/Mintfile") == 1 then
+                    return "mint"
+                end
+                return "swiftformat"
+            end,
+            args = function(_, ctx)
+                local root = swift_root(ctx)
+                local has_mint = vim.fn.filereadable(root .. "/Mintfile") == 1
+                local cfg = root .. "/.swiftformat"
+                local has_cfg = vim.fn.filereadable(cfg) == 1
+
+                local args = {}
+                if has_mint then
+                    vim.list_extend(args, { "run", "swiftformat", "--" })
+                end
+                if has_cfg then
+                    vim.list_extend(args, { "--config", cfg })
+                else
+                    vim.list_extend(args, SWIFT_FALLBACK_ARGS)
+                end
+                vim.list_extend(args, { "--quiet", "$FILENAME" })
+                return args
+            end,
+            cwd = function(_, ctx)
+                return swift_root(ctx)
+            end,
+            stdin = false,
         },
         swiftlint = {
             command = "swiftlint",
