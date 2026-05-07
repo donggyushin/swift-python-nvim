@@ -631,6 +631,19 @@ telescope.setup({
 -- fzf 확장 로드
 pcall(require("telescope").load_extension, "fzf")
 
+-- nvim-treesitter `main` 브랜치엔 parsers.ft_to_lang 가 없어서 Telescope 미리보기가 깨짐.
+-- vim.treesitter.start 기반으로 재정의해 호환 문제 해결.
+do
+    local ok, previewer_utils = pcall(require, "telescope.previewers.utils")
+    if ok then
+        previewer_utils.ts_highlighter = function(bufnr, ft)
+            if not ft or ft == "" then return false end
+            local lang = vim.treesitter.language.get_lang(ft) or ft
+            return pcall(vim.treesitter.start, bufnr, lang)
+        end
+    end
+end
+
 -- Lualine 설정
 require("lualine").setup({
     options = {
