@@ -433,7 +433,7 @@ vim.lsp.config.sourcekit = {
 
 -- xcode-build-server: .compile sync + sourcekit restart
 -- Xcode 에서 빌드한 뒤 nvim 에서 이 키를 눌러 stale 한 .compile 을 갱신한다.
-vim.keymap.set("n", "<leader>xR", function()
+vim.keymap.set("n", "<leader>xx", function()
     local cwd = vim.fn.getcwd()
     local ok, content = pcall(vim.fn.readfile, cwd .. "/buildServer.json")
     if not ok then
@@ -445,7 +445,16 @@ vim.keymap.set("n", "<leader>xR", function()
         on_exit = function(_, code)
             if code == 0 then
                 vim.schedule(function()
-                    vim.cmd("LspRestart sourcekit")
+                    for _, client in ipairs(vim.lsp.get_clients({ name = "sourcekit" })) do
+                        client:stop(true)
+                    end
+                    vim.defer_fn(function()
+                        for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                            if vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "swift" then
+                                vim.api.nvim_exec_autocmds("FileType", { buffer = bufnr })
+                            end
+                        end
+                    end, 200)
                     vim.notify("xbs synced + sourcekit restarted")
                 end)
             else
