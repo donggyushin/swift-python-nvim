@@ -431,6 +431,30 @@ vim.lsp.config.sourcekit = {
     end,
 }
 
+-- xcode-build-server: .compile sync + sourcekit restart
+-- Xcode 에서 빌드한 뒤 nvim 에서 이 키를 눌러 stale 한 .compile 을 갱신한다.
+vim.keymap.set("n", "<leader>xR", function()
+    local cwd = vim.fn.getcwd()
+    local ok, content = pcall(vim.fn.readfile, cwd .. "/buildServer.json")
+    if not ok then
+        vim.notify("buildServer.json not found in " .. cwd, vim.log.levels.WARN)
+        return
+    end
+    local build_root = vim.fn.json_decode(table.concat(content, "\n")).build_root
+    vim.fn.jobstart({ "xcode-build-server", "parse", "-as", build_root .. "/" }, {
+        on_exit = function(_, code)
+            if code == 0 then
+                vim.schedule(function()
+                    vim.cmd("LspRestart sourcekit")
+                    vim.notify("xbs synced + sourcekit restarted")
+                end)
+            else
+                vim.notify("xcode-build-server parse failed (exit " .. code .. ")", vim.log.levels.ERROR)
+            end
+        end,
+    })
+end, { desc = "Sync xcode-build-server .compile + restart sourcekit" })
+
 -- LSP 자동 시작
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "python",
