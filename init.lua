@@ -635,7 +635,22 @@ require("conform").setup({
         },
         swiftlint = {
             command = "swiftlint",
-            args = { "lint", "--fix", "--quiet", "$FILENAME" },
+            -- 프로젝트 .swiftlint.yml 우선, 없으면 글로벌 ~/.swiftlint.yml fallback.
+            -- (config 없이 돌면 기본 trailing_whitespace 룰이 빈 줄 공백을 지워
+            --  Xcode 스타일 코드베이스에서 의미 없는 diff 가 대량 발생)
+            args = function(_, ctx)
+                local root = vim.fs.root(ctx.dirname, { ".swiftlint.yml", ".git" }) or ctx.dirname
+                local cfg = root .. "/.swiftlint.yml"
+                if vim.fn.filereadable(cfg) == 0 then
+                    cfg = vim.fn.expand("~/.swiftlint.yml")
+                end
+                local args = { "lint", "--fix", "--quiet" }
+                if vim.fn.filereadable(cfg) == 1 then
+                    vim.list_extend(args, { "--config", cfg })
+                end
+                vim.list_extend(args, { "$FILENAME" })
+                return args
+            end,
             stdin = false,
         },
     },
