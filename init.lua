@@ -597,9 +597,13 @@ require("conform").setup({
         json = { "prettier" },
         markdown = { "prettier" },
     },
-    format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = true,
+    -- 저장 후 비동기 포맷. mint run 오버헤드(+큰 파일)로 동기 format_on_save 의
+    -- timeout_ms 를 넘기는 경우가 있어 BufWritePost 비동기로 전환.
+    format_after_save = {
+        lsp_format = "fallback",
+        -- 비동기라 포맷 타임아웃이 아니라 `:wq` 시 VimLeavePre 대기 예산(기본 1000ms).
+        -- mint cold start(~0.8s)+큰 파일이면 1초로는 포맷이 잘려나간다.
+        timeout_ms = 5000,
     },
     formatters = {
         swiftformat = {
@@ -618,7 +622,9 @@ require("conform").setup({
 
                 local args = {}
                 if has_mint then
-                    vim.list_extend(args, { "run", "swiftformat", "--" })
+                    -- mint 0.18.0 은 `--` 구분자를 옵션으로 파싱해 실패한다
+                    -- (error: Unknown option --.) → 나머지 인자를 그대로 이어 붙인다.
+                    vim.list_extend(args, { "run", "swiftformat" })
                 end
                 if has_cfg then
                     vim.list_extend(args, { "--config", cfg })
